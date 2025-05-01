@@ -20,8 +20,8 @@ mambu_url = ""
 # Load configuration from config.ini
 config = ConfigParser()
 config.read('config.ini')
-reevo_url = config.get('mambu', 'reevo_url')
-ccb_url = config.get('mambu', 'ccb_url')
+reevo_url = config.get('mambu', 'reevo_prod_url')
+ccb_url = config.get('mambu', 'ccb_prod_url')
 
 def get_secret(brand):
     region_name = "eu-west-1"
