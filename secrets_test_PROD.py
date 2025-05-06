@@ -1,0 +1,21 @@
+import boto3
+import sys
+import botocore.exceptions
+
+# Use AWS profile
+session = boto3.Session(profile_name="profile_name_here")
+region_name = "eu-west-1"
+secret_name = "prod/mambu/reevo"
+
+# Create the client
+client = session.client(
+    service_name='secretsmanager',
+    region_name=region_name
+)
+
+try:
+    response = client.get_secret_value(SecretId=secret_name)
+    secret = response.get("SecretString", "<No string secret found>")
+    print(f"Secret value:\n{secret}")
+except botocore.exceptions.ClientError as e:
+    print(f"Error retrieving secret: {e.response['Error']['Message']}")
