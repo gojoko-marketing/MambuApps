@@ -5,7 +5,7 @@ import botocore.exceptions
 # Use AWS profile
 session = boto3.Session(profile_name="CollectionsAdmin-157671526438")
 region_name = "eu-west-1"
-secret_name = "sandbox/mambu/reevo"
+secret_name = "sandbox/mambu/ccb"
 
 # Create the client
 client = session.client(

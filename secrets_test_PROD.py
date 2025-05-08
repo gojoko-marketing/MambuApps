@@ -3,9 +3,10 @@ import sys
 import botocore.exceptions
 
 # Use AWS profile
-session = boto3.Session(profile_name="profile_name_here")
+#aws sso login --profile CollectionsAdmin-755177498602
+session = boto3.Session(profile_name="CollectionsAdmin-755177498602")
 region_name = "eu-west-1"
-secret_name = "prod/mambu/reevo"
+secret_name = "prod/mambu/ccb"
 
 # Create the client
 client = session.client(

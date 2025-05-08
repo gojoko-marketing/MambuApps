@@ -8,8 +8,10 @@ from datetime import date
 from rich import print
 import json
 from configparser import ConfigParser
+import subprocess
 
-#aws sso login --profile CollectionsAdmin-157671526438
+# Ensure AWS SSO login is performed
+subprocess.run(["aws", "sso", "login", "--profile", "CollectionsAdmin-755177498602"], check=True)
 
 # Define the path to the CSV file
 xlsx_file_path = os.path.expanduser("interest.xlsx")
@@ -26,12 +28,12 @@ ccb_url = config.get('mambu', 'ccb_prod_url')
 def get_secret(brand):
     region_name = "eu-west-1"
     if brand == "Reevo":
-        secret_name = "sandbox/mambu/reevo"
+        secret_name = "prod/mambu/reevo"
     elif brand == "CCB":
-        secret_name = "sandbox/mambu/ccb"
+        secret_name = "prod/mambu/ccb"
 
     # Create Secrets Manager client
-    session = boto3.Session(profile_name="CollectionsAdmin-157671526438", region_name=region_name)
+    session = boto3.Session(profile_name="CollectionsAdmin-755177498602", region_name=region_name)
     client = session.client("secretsmanager")
 
     try:
