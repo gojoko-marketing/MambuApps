@@ -9,6 +9,7 @@ from rich import print
 import json
 from configparser import ConfigParser
 import subprocess
+from openpyxl import load_workbook
 
 # Ensure AWS SSO login is performed
 subprocess.run(["aws", "sso", "login", "--profile", "CollectionsAdmin-755177498602"], check=True)
@@ -54,7 +55,9 @@ def process_xlsx(file_path):
         if data[data['sent'].isna()].empty:
             print("[bold yellow]No rows to process.[/bold yellow]")
             return
-        for _, row in data[data['sent'].isna()].iterrows():
+        wb = load_workbook(xlsx_file_path)
+        ws = wb['interestamends']
+        for i, row in data[data['sent'].isna()].iterrows():
                 # Prepare the payload for the API call
                 account_number = row["account_number"]
                 if row["brand"] == "Reevo": #also add access token into headers
@@ -76,8 +79,10 @@ def process_xlsx(file_path):
                 response = requests.post(api_url, json=payload, headers=headers)
                 # Check the response
                 if response.status_code == 204:
-                    data.loc[row.name, 'sent'] = pd.Timestamp.now()
-                    data.to_excel(file_path, index=False)
+                    sent_col_index = data.columns.get_loc("sent") + 1
+                    excel_row = i + 2
+                    ws.cell(row=excel_row, column=sent_col_index, value=pd.Timestamp.now())
+                    wb.save(xlsx_file_path)
                     print(f"""[bold green]Successfully processed record ({row["brand"]}): {row["account_number"]}[/bold green]""")
                 else:
                     print(f"""[bold red]Failed to process record ({row["brand"]}): {row["account_number"]}, Status Code: {response.status_code}, Response: {response.text}[/bold red]""")
